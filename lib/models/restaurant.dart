@@ -1,4 +1,3 @@
-// lib/models/restaurant.dart
 class Restaurant {
   String? id;
   String? name;

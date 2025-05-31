@@ -1,5 +1,4 @@
-// lib/models/restaurant_detail_response.dart
-import 'package:restaurant_app/models/restaurant.dart'; // Jalur import diperbaiki
+import 'package:restaurant_app/models/restaurant.dart'; 
 
 class RestaurantDetailResponse {
   bool? error;

@@ -1,9 +1,8 @@
-// lib/pages/register_page.dart
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/utils/preferences_helper.dart';
 
 class RegisterPage extends StatefulWidget {
-  static const routeName = '/register'; // Menambahkan routeName
+  static const routeName = '/register'; 
 
   const RegisterPage({super.key});
 
@@ -15,25 +14,24 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final PreferencesHelper _prefsHelper = PreferencesHelper();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // Untuk validasi form
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); 
 
   void _register() async {
-    if (_formKey.currentState!.validate()) { // Validasi form
+    if (_formKey.currentState!.validate()) { 
       final username = _usernameController.text.trim();
       final password = _passwordController.text.trim();
 
-      // Simpan data user
       await _prefsHelper.saveUserData(username, password);
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Registrasi Berhasil! Silakan Login.'),
-          backgroundColor: Colors.green,
+          backgroundColor: Theme.of(context).colorScheme.primary, 
           duration: const Duration(seconds: 2),
         ),
       );
-      Navigator.pop(context); // Kembali ke halaman login
+      Navigator.pop(context); 
     }
   }
 
@@ -51,8 +49,8 @@ class _RegisterPageState extends State<RegisterPage> {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFFE0F2F7), // Light Blue
-              Color(0xFFB3E5FC), // Lighter Blue
+              Color(0xFF1565C0), 
+              Color(0xFF42A5F5), 
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -61,7 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(32.0),
-            child: Form( // Wrap dengan Form
+            child: Form( 
               key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -69,7 +67,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   Icon(
                     Icons.person_add,
                     size: 100,
-                    color: Theme.of(context).primaryColor,
+                    color: Colors.white, 
                   ),
                   const SizedBox(height: 30),
                   Text(
@@ -77,7 +75,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -85,14 +83,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     'Daftarkan diri Anda untuk bergabung dengan komunitas kuliner kami.',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Colors.grey[700],
+                      color: Colors.white70,
                     ),
                   ),
                   const SizedBox(height: 40),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.white, 
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
@@ -110,13 +108,6 @@ class _RegisterPageState extends State<RegisterPage> {
                             labelText: 'Username',
                             hintText: 'Pilih username Anda',
                             prefixIcon: const Icon(Icons.person),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[100],
-                            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -133,13 +124,6 @@ class _RegisterPageState extends State<RegisterPage> {
                             labelText: 'Password',
                             hintText: 'Minimal 6 karakter',
                             prefixIcon: const Icon(Icons.lock),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[100],
-                            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -156,11 +140,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           onPressed: _register,
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size.fromHeight(55),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: Theme.of(context).primaryColor.withOpacity(0.4),
                           ),
                           child: Text(
                             'REGISTER',
@@ -173,7 +152,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         const SizedBox(height: 20),
                         TextButton(
                           onPressed: () {
-                            Navigator.pop(context); // Kembali ke halaman login
+                            Navigator.pop(context); 
                           },
                           child: Text(
                             'Sudah punya akun? Login di sini',

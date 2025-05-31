@@ -1,4 +1,3 @@
-// lib/utils/preferences_helper.dart
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:restaurant_app/models/restaurant.dart';
@@ -6,8 +5,8 @@ import 'package:restaurant_app/models/restaurant.dart';
 class PreferencesHelper {
   static const String _usernameKey = 'username';
   static const String _passwordKey = 'password';
-  static const String _loggedInStatusKey = 'isLoggedIn'; // New key for login status
-  static const String _loggedInUserKey = 'loggedInUser'; // To store the actually logged in user
+  static const String _loggedInStatusKey = 'isLoggedIn'; 
+  static const String _loggedInUserKey = 'loggedInUser'; 
   static const String _favoriteRestaurantsKey = 'favoriteRestaurants';
 
   Future<void> saveUserData(String username, String password) async {
@@ -50,9 +49,9 @@ class PreferencesHelper {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_usernameKey);
     await prefs.remove(_passwordKey);
-    await prefs.remove(_loggedInStatusKey); // Clear login status
-    await prefs.remove(_loggedInUserKey); // Clear logged in user
-    await prefs.remove(_favoriteRestaurantsKey); // Clear favorites as well for a clean logout
+    await prefs.remove(_loggedInStatusKey); 
+    await prefs.remove(_loggedInUserKey); 
+    await prefs.remove(_favoriteRestaurantsKey); 
   }
 
   Future<List<String>> getFavoriteRestaurantIds() async {

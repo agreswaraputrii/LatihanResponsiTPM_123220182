@@ -1,4 +1,3 @@
-// lib/pages/detail_page.dart
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:restaurant_app/api/api_service.dart';
@@ -43,18 +42,18 @@ class _DetailPageState extends State<DetailPage> {
       await _prefsHelper.removeFavoriteRestaurant(widget.restaurantId);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Restaurant dihapus dari favorit.'),
-          backgroundColor: Colors.red,
+        SnackBar(
+          content: const Text('Restaurant dihapus dari favorit.'),
+          backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
     } else {
       await _prefsHelper.addFavoriteRestaurant(_restaurant!);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Restaurant ditambahkan ke favorit.'),
-          backgroundColor: Colors.green,
+        SnackBar(
+          content: const Text('Restaurant ditambahkan ke favorit.'),
+          backgroundColor: Colors.green, 
         ),
       );
     }
@@ -68,6 +67,18 @@ class _DetailPageState extends State<DetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detail Restoran'),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF1565C0),
+                Color(0xFF42A5F5),
+              ],
+            ),
+          ),
+        ),
       ),
       body: FutureBuilder<RestaurantDetailResponse>(
         future: _restaurantDetailFuture,
@@ -75,7 +86,38 @@ class _DetailPageState extends State<DetailPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}\nMohon Cek Koneksi Internet Anda.'));
+            return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.wifi_off,
+                      size: 64,
+                      color: Colors.grey[400],
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Oops! Terjadi kesalahan',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.grey[600]),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Mohon cek koneksi internet Anda',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[500]),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _restaurantDetailFuture = _apiService.getDetailRestaurant(widget.restaurantId);
+                        });
+                      },
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('Coba Lagi'),
+                    ),
+                  ],
+                ),
+            );
           } else if (snapshot.hasData) {
             _restaurant = snapshot.data!.restaurant;
             if (_restaurant == null) {
@@ -86,26 +128,42 @@ class _DetailPageState extends State<DetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Gambar Restoran
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(15.0), // Sudut lebih membulat
-                    child: CachedNetworkImage(
-                      imageUrl: _apiService.getRestaurantImageUrl(_restaurant!.pictureId!),
-                      width: double.infinity,
-                      height: 250, // Tinggi gambar lebih besar
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-                      errorWidget: (context, url, error) => Container(
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15.0),
+                      child: CachedNetworkImage(
+                        imageUrl: _apiService.getRestaurantImageUrl(_restaurant!.pictureId!),
                         width: double.infinity,
                         height: 250,
-                        color: Colors.grey[200],
-                        child: const Icon(Icons.broken_image, size: 80, color: Colors.grey),
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          color: Colors.grey[200],
+                          child: const Center(
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          width: double.infinity,
+                          height: 250,
+                          color: Colors.grey[200],
+                          child: const Icon(Icons.broken_image,
+                              size: 80, color: Colors.grey),
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(height: 20),
 
-                  // Nama Restoran & Tombol Favorit
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -113,16 +171,15 @@ class _DetailPageState extends State<DetailPage> {
                         child: Text(
                           _restaurant!.name ?? 'Nama Tidak Diketahui',
                           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.deepOrange,
+                            color: Theme.of(context).colorScheme.onBackground,
                           ),
                         ),
                       ),
                       IconButton(
                         icon: Icon(
                           _isFavorite ? Icons.favorite : Icons.favorite_border,
-                          color: _isFavorite ? Colors.red : Colors.grey,
-                          size: 35, // Ukuran ikon favorit lebih besar
+                          color: _isFavorite ? Colors.red : Theme.of(context).colorScheme.onSurface,
+                          size: 35,
                         ),
                         onPressed: _toggleFavorite,
                         tooltip: _isFavorite ? 'Hapus dari Favorit' : 'Tambah ke Favorit',
@@ -131,10 +188,9 @@ class _DetailPageState extends State<DetailPage> {
                   ),
                   const SizedBox(height: 10),
 
-                  // Lokasi dan Rating
                   Row(
                     children: [
-                      const Icon(Icons.location_on, size: 22, color: Colors.grey),
+                      Icon(Icons.location_on, size: 22, color: Colors.grey[700]),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -147,7 +203,7 @@ class _DetailPageState extends State<DetailPage> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.star, size: 22, color: Colors.amber),
+                      Icon(Icons.star, size: 22, color: Colors.amber[700]),
                       const SizedBox(width: 8),
                       Text(
                         'Rating: ${_restaurant!.rating ?? '-'}',
@@ -157,7 +213,6 @@ class _DetailPageState extends State<DetailPage> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Deskripsi
                   Text(
                     'Deskripsi:',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
@@ -170,10 +225,6 @@ class _DetailPageState extends State<DetailPage> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Contoh Menus (jika API detail menyediakan)
-                  // Perlu perbaikan model Restaurant jika ingin menampilkan ini
-                  // Text('Menu Makanan:', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
-                  // ... (Logika untuk menampilkan menu)
                 ],
               ),
             );
